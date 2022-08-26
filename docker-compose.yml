@@ -1,0 +1,62 @@
+version: "3.8"
+networks:
+  app-network:
+    driver: bridge
+services:
+  apache:
+    container_name: apache
+    build: ./docker/apache
+    networks:
+      - app-network
+    restart: unless-stopped
+    links:
+      - php
+    ports:
+      - "80:80"
+    volumes:
+      - ./logs/apache:/var/log/apache2
+      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+  php:
+    container_name: php
+    build: ./docker/php
+    networks:
+      - app-network
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+    working_dir: /usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+  composer:
+    container_name: composer
+    networks:
+      - app-network
+    image: composer/composer
+    volumes:
+      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+    working_dir: /usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+    command: install
+  mysql:
+    image: mysql:8.0.27
+    container_name: mysql
+    networks:
+      - app-network
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: '$$Uu946!'
+      MYSQL_DATABASE: laravel_crud_example
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 'jksjhd7cmds4#'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./database/mysql:/var/lib/mysql
+  node:
+    container_name: node
+    build: ./docker/node
+    networks:
+      - app-network
+    tty: true
+    working_dir: /usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+    command: npm install
+    volumes:
+      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
