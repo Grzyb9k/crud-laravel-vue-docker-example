@@ -9,5 +9,3 @@ RUN docker-php-ext-install bcmath mbstring intl opcache
 
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
-#RUN curl -sL https://deb.nodesource.com/setup_16.x| bash -
-#RUN apt-get install -y nodejs

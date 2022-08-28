@@ -3,41 +3,49 @@ networks:
   app-network:
     driver: bridge
 services:
-  apache:
-    container_name: apache
-    build: ./docker/apache
-    networks:
-      - app-network
+  nginx:
+    container_name: nginx
+    build:
+      context: ./docker/nginx
+      dockerfile: nginx.dockerfile
     restart: unless-stopped
-    links:
-      - php
+    tty: true
     ports:
       - "80:80"
     volumes:
-      - ./logs/apache:/var/log/apache2
-      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+      - ./src:/var/www
+    depends_on:
+      - php
+      - mysql
+      - composer
+      - npm
+    networks:
+      - app-network
   php:
     container_name: php
-    build: ./docker/php
+    build:
+      context: ./docker/php
+      dockerfile: php.dockerfile
     networks:
       - app-network
-    ports:
-      - "9000:9000"
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www
     volumes:
-      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
-    working_dir: /usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+      - ./src:/var/www
   composer:
     container_name: composer
+    build:
+      context: ./docker/composer
+      dockerfile: composer.dockerfile
     networks:
       - app-network
-    image: composer/composer
     volumes:
-      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
-    working_dir: /usr/local/apache2/htdocs/crud-laravel-vue-docker-example
-    command: install
+      - ./src:/var/www
   mysql:
     image: mysql:8.0.27
     container_name: mysql
+    tty: true
     networks:
       - app-network
     restart: unless-stopped
@@ -50,13 +58,15 @@ services:
       - "3306:3306"
     volumes:
       - ./database/mysql:/var/lib/mysql
-  node:
-    container_name: node
-    build: ./docker/node
+  npm:
+    container_name: npm
+    build:
+      context: ./docker/npm
+      dockerfile: npm.dockerfile
+    ports:
+      - "3000:3000"
+      - "3001:3001"
     networks:
       - app-network
-    tty: true
-    working_dir: /usr/local/apache2/htdocs/crud-laravel-vue-docker-example
-    command: npm install
     volumes:
-      - ./src/crud-laravel-vue-docker-example:/usr/local/apache2/htdocs/crud-laravel-vue-docker-example
+      - ./src:/var/www
