@@ -22,7 +22,7 @@ export default defineStore({
     actions: {
         async login(user) {
             await axios
-                .post("login", user)
+                .post("api/login", user)
                 .then(response => {
                     this.user = response.data.user;
                     localStorage.setItem(
