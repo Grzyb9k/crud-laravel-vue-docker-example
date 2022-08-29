@@ -4,7 +4,7 @@ import {useAuthStore} from "../store";
 import MainView from "../views/MainView"
 import LoginView from "../views/LoginView"
 import ArticleFormView from "../views/ArticleFormView";
-import ArticleIndexView from "../views/ArticleIndexView";
+
 export const routes = [
     {
         name: 'main',
@@ -14,17 +14,9 @@ export const routes = [
     },
     {
         name: "login",
-        path: "admin/login",
+        path: "/admin/login",
         component: LoginView,
         meta: { guest: true },
-    },
-    {
-        name: "article-index",
-        path: "/admin/articles",
-        component: ArticleIndexView,
-        meta: {
-            requiresAuth: true,
-        },
     },
     {
         name: "article-form",
@@ -51,12 +43,6 @@ router.beforeEach((to, from, next) => {
         }
         next({ name: "login" });
     } else if (to.matched.some(record => record.meta.guest)) {
-        if (auth.isAuthenticated) {
-            next("/admin/");
-            return;
-        }
-        next();
-    } else {
         next();
     }
 });

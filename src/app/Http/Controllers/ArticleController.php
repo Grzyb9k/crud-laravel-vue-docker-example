@@ -20,7 +20,7 @@ class ArticleController extends Controller
     {
         try {
             $result =[
-                'articles' => ArticleResource::collection(Article::all()),
+                'articles' => ArticleResource::collection(Article::with('author')->get()),
                 'status' => 200
             ];
         } catch (\Exception $e) {

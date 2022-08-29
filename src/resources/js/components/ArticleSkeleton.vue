@@ -2,10 +2,8 @@
 
 </template>
 
-<script>
-export default {
-    name: "ArticleSkeleton"
-}
+<script setup>
+
 </script>
 
 <style scoped>

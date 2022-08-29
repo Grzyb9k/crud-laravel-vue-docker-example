@@ -56,7 +56,7 @@ export default defineStore({
                         this.headers.Authorization = null;
                         localStorage.removeItem("user");
                         localStorage.removeItem("token");
-                        this.$router.push("/admin/login");
+                        this.$router.push("/");
                     },
                     error => {
                         throw new Error(error);

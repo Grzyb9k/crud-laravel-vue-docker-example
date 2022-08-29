@@ -10,4 +10,9 @@ class Article extends Model
     use HasFactory;
 
     protected $fillable = ['user_id', 'title', 'content'];
+
+    public function author()
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }
