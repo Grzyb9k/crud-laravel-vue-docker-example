@@ -1,2 +1,4 @@
 /.idea
-/database/mysql
+/database/mysql/**
+/database/redis/data/**
+!/database/redis/data/**/.gitkeep

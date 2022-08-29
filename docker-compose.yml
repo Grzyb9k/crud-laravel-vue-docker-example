@@ -8,8 +8,6 @@ services:
     build:
       context: ./docker/nginx
       dockerfile: nginx.dockerfile
-    restart: unless-stopped
-    tty: true
     ports:
       - "80:80"
     volumes:
@@ -28,9 +26,9 @@ services:
       dockerfile: php.dockerfile
     networks:
       - app-network
-    restart: unless-stopped
-    tty: true
     working_dir: /var/www
+    ports:
+      - "9000:9000"
     volumes:
       - ./src:/var/www
   composer:
@@ -70,3 +68,23 @@ services:
       - app-network
     volumes:
       - ./src:/var/www
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    container_name: mailhog
+    restart: on-failure
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    networks:
+      - app-network
+  redis:
+    image: redis:6.2.1-buster
+    container_name: redis
+    restart: unless-stopped
+    expose:
+      - 6379
+    tty: true
+    volumes:
+      - ./database/redis/data:/data
+    networks:
+      - app-network

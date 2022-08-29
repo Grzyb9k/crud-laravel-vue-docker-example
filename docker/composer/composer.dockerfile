@@ -1,3 +1,7 @@
 FROM composer/composer
 
-ENTRYPOINT composer install -q -n --no-ansi --no-dev --no-scripts --no-progress --prefer-dist \
+WORKDIR /var/www
+
+ADD composer_init.sh /composer_init.sh
+RUN chmod +x /composer_init.sh
+ENTRYPOINT /composer_init.sh
